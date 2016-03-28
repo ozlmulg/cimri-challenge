@@ -25,15 +25,15 @@ public class ProductController extends WebMvcConfigurerAdapter {
    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
    @RequestMapping(value = "/", method = RequestMethod.GET)
-   public String addProductView(Model model) {
-      model.addAttribute("title", "dac");
+   public String addProductView() {
       return "main";
    }
 
    @RequestMapping("/list-products")
-   public String listProductsView(@RequestParam(value = "title", required = true) String title, Model model) {
-      List<Product> products = productService.getProductsLikeTitle(title);
+   public String listProductsView(@RequestParam(value = "query", required = true) String query, Model model) {
+      List<Product> products = productService.getProductsLikeTitle(query);
       model.addAttribute("products", products);
+      model.addAttribute("query", query);
       return "product-list";
    }
 
@@ -50,7 +50,7 @@ public class ProductController extends WebMvcConfigurerAdapter {
       } catch (Exception ex) {
          logger.error("This is Error message", ex);
          model.addAttribute("message", "No such product found with id=" + id);
-         return "info";
+         return "error";
       }
    }
 }

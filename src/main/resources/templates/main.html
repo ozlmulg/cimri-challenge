@@ -1,22 +1,65 @@
-<!DOCTYPE html >
-<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html>
 <head>
-    <title>Search Product</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>cimri.com | Ana Sayfa</title>
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
+    <style type="text/css">
+        #tfheader{
+            background-color:#c3dfef;
+        }
+        #tfnewsearch{
+            float: left;
+            padding:20px;
+        }
+        .tftextinput{
+            margin: 0;
+            padding: 5px 15px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size:14px;
+            border:1px solid #0076a3; border-right:0px;
+            border-top-left-radius: 5px 5px;
+            border-bottom-left-radius: 5px 5px;
+        }
+        .tfbutton {
+            margin: 0;
+            padding: 5px 15px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size:14px;
+            outline: none;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            color: #ffffff;
+            border: solid 1px #0076a3; border-right:0px;
+            background: #0095cd;
+            background: -webkit-gradient(linear, left top, left bottom, from(#00adee), to(#0078a5));
+            background: -moz-linear-gradient(top,  #00adee,  #0078a5);
+            border-top-right-radius: 5px 5px;
+            border-bottom-right-radius: 5px 5px;
+        }
+        .tfbutton:hover {
+            text-decoration: none;
+            background: #007ead;
+            background: -webkit-gradient(linear, left top, left bottom, from(#0095cc), to(#00678e));
+            background: -moz-linear-gradient(top,  #0095cc,  #00678e);
+        }
+        .tfbutton::-moz-focus-inner {
+            border: 0;
+        }
+        .tfclear{
+            clear:both;
+        }
+    </style>
 </head>
-<body>
-<h1><b>Search Product:</b></h1>
-<form action="#" th:action="@{/list-products}" th:object="*{product}" method="get">
-    <table>
-        <tr>
-            <td>Title:</td>
-            <td><input type="text" th:field="*{title}" /></td>
-            <td th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Title Error</td>
-        </tr>
-        <tr>
-            <td><button type="submit">Submit</button></td>
-        </tr>
-    </table>
-</form>
+<body bgcolor="#f0ffff">
+<h4>cimri | cebinize çalışır!</h4>
+<div id="tfheader">
+    <form id="tfnewsearch" method="get" action="/list-products">
+        <input type="text" class="tftextinput" name="query" size="150" maxlength="120" placeholder="Binlerce ürün arasından en ucuz fiyatı bulun!"/>
+        <input type="submit" value="Bul" class="tfbutton"/>
+    </form>
+    <div class="tfclear"></div>
+</div>
 </body>
 </html>
+
