@@ -1,0 +1,28 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+   <title>List of Products</title>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<h1><b>Products:</b></h1>
+<table>
+   <tr>
+      <th>SNO</th>
+      <th>ID</th>
+      <th>TITLE</th>
+      <th>BRAND</th>
+      <th>CATEGORY</th>
+      <th>URL</th>
+   </tr>
+   <tr th:each="product,iterationStatus  : ${products}">
+      <td th:text="${iterationStatus.count}">1</td>
+      <td th:text="${product.id}">001</td>
+      <td th:text="${product.title}">Title</td>
+      <td th:text="${product.brand}">Brand</td>
+      <td th:text="${product.category}">Category</td>
+      <td th:text="${product.url}">Url</td>
+   </tr>
+</table>
+</body>
+</html>
