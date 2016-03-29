@@ -4,6 +4,7 @@ package com.cimri.service;
  */
 
 import com.cimri.entity.Product;
+import com.cimri.entity.ProductPrice;
 import java.util.List;
 import javax.sql.DataSource;
 
@@ -15,20 +16,22 @@ public interface ProductService {
     void setDataSource(DataSource ds);
     /**
      * This is the method to be used to create
-     * a record in the Product table.
-     */
-    void addProduct(Product product);
-    /**
-     * This is the method to be used to create
      * multiple records in the Product table.
      */
-    void insertBatch(final List<Product> products);
+    void insertProductBatch(final List<Product> products);
+    /**
+     * This is the method to be used to create
+     * multiple records in the ProductPrice table.
+     */
+    void insertProductPriceBatch(final List<ProductPrice> productPrices);
     /**
      * This is the method to be used to list down
      * a record from the Product table corresponding
      * to a passed student id.
      */
     Product getProduct(Integer id);
+
+    List<ProductPrice> getProductPrices(Integer productId);
     /**
      * This is the method to be used to list down
      * all the records from the Product table.

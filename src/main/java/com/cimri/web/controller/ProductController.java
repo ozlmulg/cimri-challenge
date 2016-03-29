@@ -1,6 +1,7 @@
 package com.cimri.web.controller;
 
 import com.cimri.entity.Product;
+import com.cimri.entity.ProductPrice;
 import com.cimri.service.ProductService;
 import java.util.List;
 import org.slf4j.Logger;
@@ -41,11 +42,13 @@ public class ProductController extends WebMvcConfigurerAdapter {
    public String getProductView(@RequestParam(value = "id", required = true) String id, Model model) {
       try {
          Product product = productService.getProduct(Integer.parseInt(id));
+         List<ProductPrice> productPrices = productService.getProductPrices(product.getId());
          model.addAttribute("id", product.getId());
          model.addAttribute("title", product.getTitle());
          model.addAttribute("brand", product.getBrand());
          model.addAttribute("category", product.getCategory());
          model.addAttribute("url", product.getUrl());
+         model.addAttribute("productPrices", productPrices);
          return "product";
       } catch (Exception ex) {
          logger.error("This is Error message", ex);

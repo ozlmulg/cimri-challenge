@@ -1,17 +1,28 @@
 <!DOCTYPE html>
-<html  xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>cimri.com | Ürün</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+   <title>cimri.com | Ürün</title>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body bgcolor="#f0ffff">
 <h4>cimri | cebinize çalışır!</h4>
 <h1><b th:text="${title}"></b></h1>
 <h3><b th:text="${brand} + '  -  ' + ${category}"></b>
-    <a th:href="@{|${url}|}">  -  Mağazaya git</a>
+   <a th:href="@{|${url}|}">Mağazaya git</a>
 </h3>
 <p>
-    <h4>Fiyat Değişim Grafiği:</h4>
+<h4>Fiyat Değişim Grafiği:</h4>
+<table>
+   <tr>
+      <th>Tarih</th>
+      <th>Fiyat</th>
+   </tr>
+   <tr th:each="productPrice : ${productPrices}">
+      <td th:text="${productPrice.date}"></td>
+      <td></td>
+      <td th:text="${productPrice.price / 100.0} + ' TL'"></td>
+   </tr>
+</table>
 </p>
 </body>
 </html>

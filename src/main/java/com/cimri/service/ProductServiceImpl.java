@@ -1,11 +1,14 @@
 package com.cimri.service;
 
 import com.cimri.config.ProductMapper;
+import com.cimri.config.ProductPriceMapper;
 import com.cimri.entity.Product;
+import com.cimri.entity.ProductPrice;
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.sql.DataSource;
 import javax.xml.parsers.DocumentBuilder;
@@ -40,16 +43,7 @@ public class ProductServiceImpl implements ProductService {
    }
 
    @Override
-   public void addProduct(Product product) {
-      String SQL = "replace into Product (id, title, brand, category, url) values (?, ?, ?, ?, ?)";
-
-      jdbcTemplate.update(SQL, product.getId(), product.getTitle(), product.getBrand(), product.getCategory(), product.getUrl());
-      logger.info("Added Product Record: {}", product);
-      return;
-   }
-
-   @Override
-   public void insertBatch(final List<Product> products) {
+   public void insertProductBatch(final List<Product> products) {
 
       String SQL = "replace into Product (id, title, brand, category, url) values (?, ?, ?, ?, ?)";
 
@@ -73,9 +67,36 @@ public class ProductServiceImpl implements ProductService {
    }
 
    @Override
+   public void insertProductPriceBatch(final List<ProductPrice> productPrices) {
+      String SQL = "replace INTO product_price (product_id, price, date) VALUES (?, ?, ?)";
+
+      jdbcTemplate.batchUpdate(SQL, new BatchPreparedStatementSetter() {
+
+         @Override
+         public void setValues(PreparedStatement ps, int i) throws SQLException {
+            ProductPrice productPrice = productPrices.get(i);
+            ps.setInt(1, productPrice.getProductId());
+            ps.setInt(2, productPrice.getPrice());
+            ps.setDate(3, new java.sql.Date(productPrice.getDate().getTime()));
+         }
+
+         @Override
+         public int getBatchSize() {
+            return productPrices.size();
+         }
+      });
+   }
+
+   @Override
    public Product getProduct(Integer id) {
       String SQL = "select * from Product where id = ?";
       return jdbcTemplate.queryForObject(SQL, new Object[]{id}, new ProductMapper());
+   }
+
+   @Override
+   public List<ProductPrice> getProductPrices(Integer productId) {
+      String SQL = "select * from product_price where product_id = " + productId + " order by date asc";
+      return jdbcTemplate.query(SQL, new ProductPriceMapper());
    }
 
    @Override
@@ -88,13 +109,15 @@ public class ProductServiceImpl implements ProductService {
    @Override
    public void readXml(String fileUrl) {
       try {
+         logger.info("Started to read file..");
          File file = new File(fileUrl);
          DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
          DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
          Document document = documentBuilder.parse(file);
 
          NodeList nodeList = document.getElementsByTagName("row");
-         List<Product> products = new ArrayList<>();
+         List<Product> products = new ArrayList<Product>();
+         List<ProductPrice> productPrices = new ArrayList<ProductPrice>();
          for (int temp = 0; temp < nodeList.getLength(); temp++) {
             Node node = nodeList.item(temp);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -106,6 +129,25 @@ public class ProductServiceImpl implements ProductService {
                String category = element.getElementsByTagName("category").item(0).getTextContent();
                String url = element.getElementsByTagName("url").item(0).getTextContent();
 
+               String productPriceValues = element.getElementsByTagName("prices").item(0).getTextContent();
+               String productDateValues = element.getElementsByTagName("dates").item(0).getTextContent();
+
+               String[] priceList = productPriceValues.split(",");
+               String[] dateList = productDateValues.split(",");
+
+               for (int i = 0; i < priceList.length; i++) {
+                  try {
+                     Double priceDouble = Double.parseDouble(priceList[i]);
+                     Integer price = (int) (priceDouble * 100);
+                     Date date = new Date(Long.parseLong(dateList[i]));
+                     ProductPrice productPrice = new ProductPrice();
+                     productPrice.setProductId(id);
+                     productPrice.setPrice(price);
+                     productPrice.setDate(date);
+                     productPrices.add(productPrice);
+                  } catch (Exception ignored) {
+                  }
+               }
                Product product = new Product();
                product.setId(id);
                product.setTitle(title);
@@ -115,7 +157,9 @@ public class ProductServiceImpl implements ProductService {
                products.add(product);
             }
          }
-         insertBatch(products);
+         insertProductBatch(products);
+         insertProductPriceBatch(productPrices);
+         logger.info("Finished to read file..");
       } catch (Exception e) {
          e.printStackTrace();
       }
