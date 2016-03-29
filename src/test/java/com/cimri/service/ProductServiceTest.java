@@ -30,12 +30,14 @@ public class ProductServiceTest {
     */
    @Test
    public void testGetProductsLikeTitle() {
-      Integer id = 1;
-      when(productService.getProductPrices(anyInt())).thenReturn(getProductPrices());
-      List<ProductPrice> productPricesReturned = productService.getProductPrices(id);
+      String query = "tablet";
+      List<Product> productsContainsQuery = getProducts().stream()
+                                                         .filter(product -> product.getTitle().toLowerCase().contains("tablet".toLowerCase()))
+                                                         .collect(Collectors.toList());
+      when(productService.getProductsLikeTitle(anyString())).thenReturn(productsContainsQuery);
+      List<Product> productsLikeTitle = productService.getProductsLikeTitle(query);
 
-      assertThat(productPricesReturned.size()).isEqualTo(getProductPrices().size());
-      assertThat(productPricesReturned.get(0).getProductId()).isEqualTo(1);
+      assertThat(productsLikeTitle.size()).isEqualTo(productsContainsQuery.size());
    }
 
    /**
@@ -58,15 +60,14 @@ public class ProductServiceTest {
     */
    @Test
    public void testGetProductPrices() {
-      String query = "tablet";
-      List<Product> productsContainsQuery = getProducts().stream()
-                                                         .filter(product -> product.getTitle().toLowerCase().contains("tablet".toLowerCase()))
-                                                         .collect(Collectors.toList());
-      when(productService.getProductsLikeTitle(anyString())).thenReturn(productsContainsQuery);
-      List<Product> productsLikeTitle = productService.getProductsLikeTitle(query);
+      Integer id = 1;
+      when(productService.getProductPrices(anyInt())).thenReturn(getProductPrices());
+      List<ProductPrice> productPricesReturned = productService.getProductPrices(id);
 
-      assertThat(productsLikeTitle.size()).isEqualTo(productsContainsQuery.size());
+      assertThat(productPricesReturned.size()).isEqualTo(getProductPrices().size());
+      assertThat(productPricesReturned.get(0).getProductId()).isEqualTo(1);
    }
+
 
    private Product getProduct() {
       Product product = new Product();
