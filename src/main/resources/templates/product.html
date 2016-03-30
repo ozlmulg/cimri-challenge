@@ -5,11 +5,6 @@
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
    <script type="text/javascript">
       window.onload = function () {
-         var dps = [
-            {x: new Date(2010, 0, 3), y: 650},
-            {x: new Date(2010, 0, 5), y: 13.3},
-            {x: new Date(2010, 0, 7), y: 99.0}
-         ];
          var chart = new CanvasJS.Chart("chartContainer",
              {
                 title: {
@@ -43,7 +38,19 @@
                       name: "Price",
                       markerType: "square",
                       color: "#F08080",
-                      dataPoints: dps
+                      dataPoints: [
+                         { x: new Date(2010,0,3), y: 510 },
+                         { x: new Date(2010,0,5), y: 560 },
+                         { x: new Date(2010,0,7), y: 540 },
+                         { x: new Date(2010,0,9), y: 558 },
+                         { x: new Date(2010,0,11), y: 544 },
+                         { x: new Date(2010,0,13), y: 693 },
+                         { x: new Date(2010,0,15), y: 657 },
+                         { x: new Date(2010,0,17), y: 663 },
+                         { x: new Date(2010,0,19), y: 639 },
+                         { x: new Date(2010,0,21), y: 673 },
+                         { x: new Date(2010,0,23), y: 660 }
+                      ]
                    }
                 ],
                 legend: {
@@ -71,6 +78,20 @@
 <h3><b th:text="${brand} + '  -  ' + ${category}"></b>
    <a th:href="@{|${url}|}">Mağazaya git</a>
 </h3>
+<p>
+<h4>Fiyat Değişimleri:</h4>
+<table>
+   <tr>
+      <th>Tarih</th>
+      <th>Fiyat</th>
+   </tr>
+   <tr th:each="productPrice : ${productPrices}">
+      <td th:text="${productPrice.date}"></td>
+      <td></td>
+      <td th:text="${productPrice.price / 100.0} + ' TL'"></td>
+   </tr>
+</table>
+</p>
 <div id="chartContainer" style="height: 300px; width: 100%;"></div>
 </body>
 </html>
